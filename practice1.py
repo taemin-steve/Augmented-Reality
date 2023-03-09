@@ -27,6 +27,10 @@ class MyApp(ShowBase):
         
         self.cam.setPos(0, -50, 0) # set camera pos 
         
+        self.Teapot = self.loader.loadModel("models/teapot")
+        self.Teapot.reparentTo(self.render)
+        self.Teapot.setPos(0,-10,0)
+        
         self.tex = p3c.Texture()
         self.tex.setup2dTexture(frame_w, frame_h, p3c.Texture.T_unsigned_byte, p3c.Texture.F_rgb) # creat new texture 
         background = OnscreenImage(image=self.tex) # Load an image object
