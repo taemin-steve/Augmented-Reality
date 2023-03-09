@@ -24,7 +24,6 @@ class MyApp(ShowBase):
         # Reparent the model to render.
         self.myAxis.reparentTo(self.render) # you should attach new objects to renderer. 
         # self.myParameter = 12345.0 # Why put this line? 
-        
         self.cam.setPos(0, -50, 0) # set camera pos 
         
         self.Teapot = self.loader.loadModel("models/teapot")
@@ -36,6 +35,8 @@ class MyApp(ShowBase):
         background = OnscreenImage(image=self.tex) # Load an image object
         # background.reparentTo(self.render2dp) # if you run this line, Only 2D renderer will run, so that you can't find any axis 
         background.reparentTo(self.render) 
+        
+        # 추가로 LMatrix4f를 이용해서 translate과 scale을 확인하였음. 
         
 
 
