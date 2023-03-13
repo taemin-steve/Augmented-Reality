@@ -45,7 +45,7 @@ app = MyApp()
 
 def updateBg(task):
     success, frame = vid_cap.read()
-    # positive y goes down in openCV, so we must flip the y coordinates
+    # positive y goes down in openCV, so we must flip the y 
     flip_frame = cv.flip(frame, 0)
     # overwriting the memory with new frame
     app.tex.setRamImage(flip_frame)
