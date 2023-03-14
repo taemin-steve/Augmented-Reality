@@ -9,6 +9,7 @@ from direct.showbase.ShowBase import ShowBase
 from panda3d.core import Shader
 import panda3d.core as p3d
 import panda3d
+from draw_sphere import draw_sphere
 
 print('Pandas Version :', panda3d.__version__)
 
@@ -29,6 +30,7 @@ class SurroundView(ShowBase):
         #보트 로드
         self.boat = self.loader.loadModel("avikus_boat.glb")
         self.boat.setScale(p3d.Vec3(100, 100, 100))
+        self.boat.set_hpr(0, 90, 90)
         bbox = self.boat.getTightBounds()
         print(bbox)
         center = (bbox[0] + bbox[1]) * 0.5
@@ -44,6 +46,12 @@ class SurroundView(ShowBase):
         self.lidarRes = 0
         self.lidarChs = 0
         self.numLidars = 0
+
+        draw_sphere(self, 500000, (0,0,0), (1,1,1,1))
+        self.sphereShader = Shader.load(
+            Shader.SL_GLSL, vertex="svm_vs.glsl", fragment="svm_ps.glsl")
+        self.sphere.setShader(self.sphereShader)
+
         def GeneratePlaneNode(svmBase):
             #shader setting for SVM
             svmBase.planeShader = Shader.load(
@@ -56,7 +64,7 @@ class SurroundView(ShowBase):
 
             bbox = svmBase.boat.getTightBounds()
             print(bbox)
-            self.waterZ = bbox[0].z + (bbox[1].z - bbox[0].z) * 0.2
+            self.waterZ = bbox[0].z + (bbox[1].z - bbox[0].z) * 0.7 # 0.2
             waterPlaneLength = 2500
             vertex.addData3(-waterPlaneLength, waterPlaneLength, self.waterZ)
             vertex.addData3(waterPlaneLength, waterPlaneLength, self.waterZ)
@@ -79,7 +87,7 @@ class SurroundView(ShowBase):
             svmBase.plane = p3d.NodePath(geomNode)
             svmBase.plane.setTwoSided(True)
             svmBase.plane.setShader(svmBase.planeShader)
-            svmBase.plane.reparentTo(svmBase.render)
+            svmBase.plane.reparentTo(svmBase.render) !!!!!!!!!!!!! 복구
 
             # the following mat4 array does not work... 
             #matViewProjs = [p3d.LMatrix4f(), p3d.LMatrix4f(), p3d.LMatrix4f(), p3d.LMatrix4f()]
@@ -88,11 +96,13 @@ class SurroundView(ShowBase):
             #svmBase.planeTexs = [p3d.Texture(), p3d.Texture(), p3d.Texture(), p3d.Texture()]
             for i in range(4):
                 svmBase.plane.setShaderInput('matViewProj' + str(i), p3d.Mat4())
+                svmBase.sphere.setShaderInput('matViewProj' + str(i), p3d.Mat4())
             #    svmBase.plane.setShaderInput('myTexture' + str(i), svmBase.planeTexs[i])
 
             svmBase.planeTexArray = p3d.Texture()
             svmBase.planeTexArray.setup2dTextureArray(256, 256, 4, p3d.Texture.T_unsigned_byte, p3d.Texture.F_rgba)
             svmBase.plane.setShaderInput('cameraImgs', svmBase.planeTexArray)
+            svmBase.sphere.setShaderInput('cameraImgs', svmBase.planeTexArray)
             svmBase.plane.setShaderInput("matTest0", p3d.Mat4())
             svmBase.plane.setShaderInput("matTest1", p3d.Mat4())
 
@@ -105,7 +115,8 @@ class SurroundView(ShowBase):
             # svmBase.semanticTexs = [p3d.Texture(), p3d.Texture(), p3d.Texture(), p3d.Texture()]
             svmBase.semanticTexArray = p3d.Texture()
             svmBase.semanticTexArray.setup2dTextureArray(256, 256, 4, p3d.Texture.T_unsigned_byte, p3d.Texture.F_rgba)
-            svmBase.plane.setShaderInput('semantics', svmBase.semanticTexArray)
+            svmBase.plane.setShaderInput('semanticImgs', svmBase.semanticTexArray)
+            svmBase.sphere.setShaderInput('semanticImgs', svmBase.semanticTexArray)
 
         GeneratePlaneNode(self)
         self.accept('r', self.shaderRecompile)
@@ -114,6 +125,9 @@ class SurroundView(ShowBase):
         self.planeShader = Shader.load(
             Shader.SL_GLSL, vertex="svm_vs.glsl", fragment="svm_ps.glsl")
         self.plane.setShader(mySvm.planeShader)
+        self.sphereShader = Shader.load(
+            Shader.SL_GLSL, vertex="sphere_vs.glsl", fragment="sphere_ps.glsl")
+        self.sphere.setShader(self.sphereShader)
 
 
 mySvm = SurroundView()
@@ -329,8 +343,14 @@ def ReceiveData():
                         -p3d.LVector3f.dot(forward, camera_pos), 1.0)
                     return matLookAt
                 
-                projMat = createOglProjMatrix(90, 1, 1, 100000)
+                projMat = createOglProjMatrix(120, 1, 1, 100000)
 
+                # sensor_pos_array = [
+                #     p3d.Vec3(30, 0, 40), 
+                #     p3d.Vec3(0, 60, 40), 
+                #     p3d.Vec3(-40, 0, 40), 
+                #     p3d.Vec3(0, -80, 40)
+                #     ]
                 sensor_pos_array = [
                     p3d.Vec3(400, 0, 230), 
                     p3d.Vec3(0, 170, 230), 
@@ -382,6 +402,7 @@ def ReceiveData():
                         #mySvm.plane.setShaderInput("matTest1", projMat)
 
                     mySvm.plane.setShaderInput("matViewProj" + str(imgIdx), viewProjMat)
+                    mySvm.sphere.setShaderInput("matViewProj" + str(imgIdx), viewProjMat)
                     imgIdx += 1
 
                 #mySvm.plane.setShaderInput("matViewProjs", matViewProjs)
@@ -394,6 +415,7 @@ def ReceiveData():
 
                 mySvm.planeTexArray.setup2dTextureArray(imageWidth, imageHeight, 4, p3d.Texture.T_unsigned_byte, p3d.Texture.F_rgba)
                 mySvm.plane.setShaderInput('cameraImgs', mySvm.planeTexArray)
+                mySvm.sphere.setShaderInput('cameraImgs', mySvm.planeTexArray)
                 
                 if bytesRGBmap > imageWidth * imageHeight * 4 * numLidars:
                     # use this branch logic to add custom data in this scene
@@ -406,7 +428,8 @@ def ReceiveData():
                 #        'semanticTex' + str(i), mySvm.semanticTexs[i])
 
                 mySvm.semanticTexArray.setup2dTextureArray(imageWidth, imageHeight, 4, p3d.Texture.T_unsigned_byte, p3d.Texture.F_rgba)
-                mySvm.plane.setShaderInput('semantics', mySvm.semanticTexArray)
+                mySvm.plane.setShaderInput('semanticImgs', mySvm.semanticTexArray)
+                mySvm.sphere.setShaderInput('semanticImgs', mySvm.semanticTexArray)
 
                 mySvm.sensorMatLHS_array = sensorMatLHS_array
                 print("Texture Initialized!")
@@ -540,15 +563,14 @@ def ReceiveData():
             if not isCustomImgs:
                 imgnpArray = np.array(
                     fullPackets[offsetColor + imgBytes * 0 : offsetColor + imgBytes * (3 + 1)], dtype=np.uint8)
-                imgArray = imgnpArray.reshape((imageWidth, imageHeight, 4, 4))
-                print(imgArray.shape)
+                imgArray = imgnpArray.reshape((4, imageWidth, imageHeight, 4))
                 mySvm.planeTexArray.setRamImage(imgArray)
             else:
                 imgnpArray = np.array(
                     fullPackets[offsetColor + imgBytes * 0 : offsetColor + imgBytes * 8], dtype=np.uint8)
-                imgArray = imgnpArray.reshape((imageWidth, imageHeight, 4, 8))
-                cameraArray = imgArray[:, :, :, ::2].copy()
-                semanticArray = imgArray[:, :, :, 1::2].copy()
+                imgArray = imgnpArray.reshape((8, imageWidth, imageHeight, 4))
+                cameraArray = imgArray[::2, :, :, :].copy()
+                semanticArray = imgArray[1::2, :, :, :].copy()
                 mySvm.planeTexArray.setRamImage(cameraArray)
                 mySvm.semanticTexArray.setRamImage(semanticArray)
 
