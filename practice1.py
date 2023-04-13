@@ -4,13 +4,13 @@ import panda3d.core as p3c
 
 import cv2 as cv
 
-vid_cap = cv.VideoCapture(0, cv.CAP_DSHOW) 
-# Check if the webcam is opened correctly
-if not vid_cap.isOpened():
-    raise IOError("Cannot open webcam")
+# vid_cap = cv.VideoCapture(0, cv.CAP_DSHOW) 
+# # Check if the webcam is opened correctly
+# if not vid_cap.isOpened():
+#     raise IOError("Cannot open webcam")
 
-frame_w = int(vid_cap.get(cv.CAP_PROP_FRAME_WIDTH))
-frame_h = int(vid_cap.get(cv.CAP_PROP_FRAME_HEIGHT))
+# frame_w = int(vid_cap.get(cv.CAP_PROP_FRAME_WIDTH))
+# frame_h = int(vid_cap.get(cv.CAP_PROP_FRAME_HEIGHT))
 
 class MyApp(ShowBase):
 
@@ -31,7 +31,7 @@ class MyApp(ShowBase):
         self.Teapot.setPos(0,-10,0)
         
         self.tex = p3c.Texture()
-        self.tex.setup2dTexture(frame_w, frame_h, p3c.Texture.T_unsigned_byte, p3c.Texture.F_rgb) # creat new texture 
+        # self.tex.setup2dTexture(frame_w, frame_h, p3c.Texture.T_unsigned_byte, p3c.Texture.F_rgb) # creat new texture 
         background = OnscreenImage(image=self.tex) # Load an image object
         # background.reparentTo(self.render2dp) # if you run this line, Only 2D renderer will run, so that you can't find any axis 
         background.reparentTo(self.render) 
@@ -53,7 +53,7 @@ def updateBg(task):
     return task.cont
 
 
-app.taskMgr.add(updateBg, 'video frame update')
+# app.taskMgr.add(updateBg, 'video frame update')
 
 # print(app.myParameter)
 app.run()
