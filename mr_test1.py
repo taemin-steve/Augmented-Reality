@@ -117,7 +117,7 @@ matView = getViewMatrix(rvec, tvec)
 matViewMarker1Inv = p3c.LMatrix4()
 matViewMarker1Inv.invertFrom(matView)
 
-cam_pos = matViewMarker1Inv.xfromPoint()
+cam_pos = matViewMarker1Inv.xfromPoint() #
 
 
 app.run()
