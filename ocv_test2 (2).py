@@ -8,7 +8,7 @@ image_names = glob.glob('./camera images/*.jpg')
 
 imgIndex = 0
 for fn in image_names:
-    print(fn)
+    # print(fn)
     img = cv.imread(fn)
     resized_img = cv.resize(img, (900, 1200))
     cv.imwrite('./resized images/image{}.jpg'.format(imgIndex), resized_img)
@@ -41,7 +41,7 @@ h, w = imgInit.shape[:2]
 pattern_points = np.zeros((patternSize[0] * patternSize[1], 3), np.float32)
 pattern_points[:, :2] = np.indices(patternSize).T.reshape(-1, 2)
 pattern_points *= 10.0 # my chessboard size is 37 mm
-print(pattern_points)
+# print(pattern_points)
 
 import glob
 image_names = glob.glob('./resized images/*.jpg')
@@ -54,6 +54,7 @@ for cb_fileName in image_names:
         corners, img = detect_2d_points_from_cbimg(cb_fileName)
         cv.imshow("test" + str(i), img)
         points3Ds.append(pattern_points) # 3D좌표
+        print(corners)
         points2Ds.append(corners) # 2D 좌표
     
 print(points3Ds)
