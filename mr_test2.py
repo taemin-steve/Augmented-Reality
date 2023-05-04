@@ -1,3 +1,4 @@
+import mediapipe
 from direct.showbase.ShowBase import ShowBase
 from direct.gui.OnscreenImage import OnscreenImage
 import panda3d.core as p3c
