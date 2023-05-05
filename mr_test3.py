@@ -75,7 +75,7 @@ class MyApp(ShowBase):
         # Create a plane to display the video on
         vdata = p3c.GeomVertexData(
             'triangle_data', p3c.GeomVertexFormat.getV3t2(), p3c.Geom.UHStatic)
-        vdata.setNumRows(4)  # optional for performance enhancement!
+        vdata.setNumRows(4)  # optional for performance enhancement
         vertex = p3c.GeomVertexWriter(vdata, 'vertex')
         vertex.addData3(-30, 0, 30)
         vertex.addData3(30, 0, 30)
