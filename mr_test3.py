@@ -57,7 +57,7 @@ class MyApp(ShowBase):
         
         self.tex = p3c.Texture()
         self.tex.setup2dTexture(imgW, imgH, p3c.Texture.T_unsigned_byte, p3c.Texture.F_rgb)
-        background = OnscreenImage(image=self.tex) # Load an image object
+        background = OnscreenImage(image=self.tex) # Load an image object!
         background.reparentTo(self.render2dp)
         self.cam2dp.node().getDisplayRegion(0).setSort(-20) # Force the rendering to render the background image first (so that it will be put to the bottom of the scene since other models will be necessarily drawn on top)
         
