@@ -66,8 +66,8 @@ class MyApp(ShowBase):
         
         self.calibrateOn = False
         # Load the video file
-        self.video1 = self.loader.loadTexture("./pose_dance_1.mp4")
-        #self.video1 = self.loader.loadTexture("./img1.jpg")
+        self.video1 = self.loader.loadTexture("./record.mp4")
+        # self.video1 = self.loader.loadTexture("./img1.jpg")
 
         myTextureStage = p3c.TextureStage("myTextureStage")
         myTextureStage.setMode(p3c.TextureStage.MReplace)
@@ -116,10 +116,10 @@ app = MyApp()
 arucoDict = cv.aruco.getPredefinedDictionary(cv.aruco.DICT_6X6_50)
 arucoParams = cv.aruco.DetectorParameters()
 
-patternSize = (5, 4)
+patternSize = (8, 6)
 pattern_points = np.zeros((patternSize[0] * patternSize[1], 3), np.float32)
 pattern_points[:, :2] = np.indices(patternSize).T.reshape(-1, 2)
-pattern_points *= 29.7 # my chessboard size is 29.7 mm
+pattern_points *= 10 # my chessboard size is 29.7 mm
 
 points3Ds = []
 numCorrespondingPairs = 50

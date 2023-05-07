@@ -1,4 +1,3 @@
-import mediapipe
 from direct.showbase.ShowBase import ShowBase
 from direct.gui.OnscreenImage import OnscreenImage
 import panda3d.core as p3c
@@ -63,16 +62,8 @@ app = MyApp()
 arucoDict = cv.aruco.getPredefinedDictionary(cv.aruco.DICT_6X6_50)
 arucoParams = cv.aruco.DetectorParameters()
 
-patternSize = (5,4)
-patter_points = ()
-
-points2Ds = []
-
-
 def updateBg(task):
     success, frame = vid_cap.read()
-    if success == False:
-        return task.cont
     # positive y goes down in openCV, so we must flip the y coordinates
     flip_frame = cv.flip(frame, 0)
     # overwriting the memory with new frame
@@ -83,9 +74,6 @@ def updateBg(task):
     print("corners {}, ".format(len(corners)))
     
     return task.cont
-
-
-
 
 app.taskMgr.add(updateBg, 'video frame update')
 
