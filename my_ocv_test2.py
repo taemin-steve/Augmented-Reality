@@ -33,22 +33,22 @@ def detect_2d_points_from_cbimg(file_name):
     
     return corners, img
 
-imgInit = cv.imread('./resized images/image0.jpg')
+imgInit = cv.imread('./checkerboard/frame5.png')
 h, w = imgInit.shape[:2]
 
 pattern_points = np.zeros((patternSize[0] * patternSize[1], 3), np.float32)
 pattern_points[:, :2] = np.indices(patternSize).T.reshape(-1, 2)
-pattern_points *= 10.0 # my chessboard size is 37 mm
-
+pattern_points *= 20.0 # my chessboard size is 37 mm
+print(pattern_points)
 import glob
-image_names = glob.glob('./resized images/*.jpg')
+image_names = glob.glob('./checkerboard/*.png')
 points3Ds = []
 points2Ds = []
 
 i = 0
 for cb_fileName in image_names:
     corners, img = detect_2d_points_from_cbimg(cb_fileName)
-    cv.imshow("test" + str(i), img)
+    # cv.imshow("test" + str(i), img)
     points3Ds.append(pattern_points)
     points2Ds.append(corners)
     
@@ -69,8 +69,8 @@ fs = cv.FileStorage("./cameraParameters.txt", cv.FileStorage_WRITE)
 fs.write('camera intrinsic matrix', intrisic_mtx)
 fs.write('camera optimized intrinsic matrix', newcameramtx)
 fs.write('distortion coefficients', dist_coefs)
-fs.write('pose R', rvecs[0])
-fs.write('pose T', tvecs[0]) #pos는 다른거가 있다
+fs.write('pose R', rvecs[5])
+fs.write('pose T', tvecs[5]) #pos는 다른거가 있다
 # 카메라 프로젝션 >> 카메라의 원점이 world의 중심에 가게 해야한다. 
 fs.release()
 
