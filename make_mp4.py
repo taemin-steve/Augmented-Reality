@@ -2,7 +2,7 @@ import cv2
 cap = cv2.VideoCapture(0)
 if cap.isOpened:
     file_path = 'record.mp4'
-    fps = 25.40
+    fps = 60
     fourcc = cv2.VideoWriter_fourcc(*'DIVX')            # 인코딩 포맷 문자
     width = cap.get(cv2.CAP_PROP_FRAME_WIDTH)
     height = cap.get(cv2.CAP_PROP_FRAME_HEIGHT)
